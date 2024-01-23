@@ -1,5 +1,5 @@
 FROM eclipse-temurin:latest
 
-COPY ./REST_API/target/REST_API-1.0-SNAPSHOT-jar-with-dependencies.jar ./app.jar
+COPY ./target/AUDITOR-1.0-SNAPSHOT-jar-with-dependencies.jar ./app.jar
 
 CMD ["java", "-jar", "app.jar"]

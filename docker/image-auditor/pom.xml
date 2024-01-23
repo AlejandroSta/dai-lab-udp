@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lab5.dai.udp.auditor</groupId>
-    <artifactId>REST_API</artifactId>
+    <artifactId>AUDITOR</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
