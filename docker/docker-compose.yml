@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+
+  auditor:
+    build:
+      context: ./image-auditor
+      dockerfile: Dockerfile
+
+  musician:
+    build:
+      context: ./image-auditor
+      dockerfile: Dockerfile
+
+#docker-compose up  --force-recreate -d
+#docker-compose down
