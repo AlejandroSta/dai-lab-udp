@@ -13,7 +13,7 @@ public class Musician {
 
             String message = "Hello group members!";
             byte[] payload = message.getBytes(UTF_8);
-            InetSocketAddress dest_address = new InetSocketAddress(IPADDRESS, 44444);
+            InetSocketAddress dest_address = new InetSocketAddress(IPADDRESS, PORT);
             var packet = new DatagramPacket(payload, payload.length, dest_address);
             socket.send(packet);
         } catch (IOException ex) {
