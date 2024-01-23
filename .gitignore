@@ -4,8 +4,9 @@ jspm_packages/
 *.log
 
 # Java
-**/target/
 
 # Optional npm cache directory
 .npm
 .idea
+docker/image-auditor/target/maven-archiver
+docker/image-musician/target/maven-archiver
