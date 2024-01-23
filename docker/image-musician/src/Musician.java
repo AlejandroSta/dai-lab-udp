@@ -1,12 +1,10 @@
 import java.io.IOException;
-import java.net.MulticastSocket;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.DatagramPacket;
+import java.net.*;
+
 import static java.nio.charset.StandardCharsets.*;
 
 
-public class Auditor {
+public class Musician {
     final static String IPADDRESS = "239.255.22.5";
     final static int PORT = 9904;
 
