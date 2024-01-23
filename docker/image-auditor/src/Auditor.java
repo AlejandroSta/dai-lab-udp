@@ -7,8 +7,8 @@ import static java.nio.charset.StandardCharsets.*;
 
 
 public class Auditor {
-    final static String IPADDRESS = "239.1.2.3";
-    final static int PORT = 44444;
+    final static String IPADDRESS = "239.255.22.5";
+    final static int PORT = 9904;
 
     public static void main(String[] args) {
         try (MulticastSocket socket = new MulticastSocket(PORT)) {
