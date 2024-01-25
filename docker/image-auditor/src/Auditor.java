@@ -4,21 +4,23 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.*;
 
 
 public class Auditor {
 
-    enum Musician{
+    enum Instrument {
         piano, trumpet, flute, violin, drum;
         private long lastTime;
         static final String[] sounds = {"ti-ta-ti", "pouet", "trulu", "gzi-gzi", "boum-boum"};
-        Musician(){
+        Instrument(){
 
         }
-        Musician(long time){
+        Instrument(long time){
             lastTime = time;
         }
     }
@@ -26,7 +28,7 @@ public class Auditor {
     final static String IPADDRESS = "239.255.22.5";
     final static int PORT = 9904;
     long time;
-    List<Musician> musicians = new ArrayList<>();
+    Map<String, Instrument> musicians = new HashMap<>();
 
     public static void main(String[] args) {
         while(true) {
