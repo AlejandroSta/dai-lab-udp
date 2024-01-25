@@ -25,7 +25,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>rest.api.Main</mainClass>
+                            <mainClass>Musician</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
