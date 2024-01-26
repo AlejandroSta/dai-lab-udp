@@ -3,10 +3,7 @@ import java.net.MulticastSocket;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.*;
 
@@ -15,20 +12,14 @@ public class Auditor {
 
     enum Instrument {
         piano, trumpet, flute, violin, drum;
-        private long lastTime;
-        static final String[] sounds = {"ti-ta-ti", "pouet", "trulu", "gzi-gzi", "boum-boum"};
-        Instrument(){
-
-        }
-        Instrument(long time){
-            lastTime = time;
-        }
+        final String[] sounds = {"ti-ta-ti", "pouet", "trulu", "gzi-gzi", "boum-boum"};
     }
 
     final static String IPADDRESS = "239.255.22.5";
     final static int PORT = 9904;
-    long time;
-    Map<String, Instrument> musicians = new HashMap<>();
+    static long time;
+    static Map<String, Instrument> musicians = new HashMap<>();
+    static Map<String, Long> times = new HashMap<>();
 
     public static void main(String[] args) {
         while(true) {
@@ -42,7 +33,27 @@ public class Auditor {
                 socket.receive(packet);
                 String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
 
-                System.out.println("Received message: " + message + " from " + packet.getAddress() + ", port " + packet.getPort());
+                //message format : "[uuid] [sound]"
+
+                String[] components = message.split(" ");
+
+                for(Instrument i : Instrument.values()){
+                    if(i.sounds[i.ordinal()].equals(components[1])){
+                        musicians.put(components[0], i);
+                        times.put(components[0], System.currentTimeMillis());
+                    }
+                }
+
+                time = System.currentTimeMillis();
+
+                for(int i = 0; i < times.size(); ++i){
+                    for(String s : musicians.keySet()){
+                        if(times.get(s) > 5 * 1000){
+                            musicians.remove(s);
+                            times.remove(s);
+                        }
+                    }
+                }
                 socket.leaveGroup(group_address, netif);
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
