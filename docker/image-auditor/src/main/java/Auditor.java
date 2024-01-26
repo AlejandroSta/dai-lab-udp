@@ -50,7 +50,7 @@ public class Auditor {
 
                 for(int i = 0; i < times.size(); ++i){
                     for(String s : musicians.keySet()){
-                        if(times.get(s) > 5 * 1000){
+                        if(times.get(s) - time > 5 * 1000){
                             musicians.remove(s);
                             times.remove(s);
                         }
