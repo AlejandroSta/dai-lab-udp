@@ -1,65 +1,34 @@
-package main.java;
-
-import java.io.IOException;
-import java.net.MulticastSocket;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.DatagramPacket;
+import java.io.*;
+import java.net.*;
 import java.util.*;
-
-import static java.nio.charset.StandardCharsets.*;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Auditor {
-
-    enum Instrument {
-        piano, trumpet, flute, violin, drum;
-        final String[] sounds = {"ti-ta-ti", "pouet", "trulu", "gzi-gzi", "boum-boum"};
-    }
-
     final static String IPADDRESS = "239.255.22.5";
-    final static int PORT = 9904;
+    final static int UDP_PORT = 9904, TCP_PORT = 2205;
     static long time;
     static Map<String, Instrument> musicians = new HashMap<>();
     static Map<String, Long> times = new HashMap<>();
 
     public static void main(String[] args) {
-        while(true) {
-            try (MulticastSocket socket = new MulticastSocket(PORT)) {
-                InetSocketAddress group_address = new InetSocketAddress(IPADDRESS, PORT);
-                NetworkInterface netif = NetworkInterface.getByName("eth0");
-                socket.joinGroup(group_address, netif);
-
-                byte[] buffer = new byte[1024];
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
-                String message = new String(packet.getData(), 0, packet.getLength(), UTF_8);
-
-                //message format : "[uuid] [sound]"
-
-                String[] components = message.split(" ");
-
-                for(Instrument i : Instrument.values()){
-                    if(i.sounds[i.ordinal()].equals(components[1])){
-                        musicians.put(components[0], i);
-                        times.put(components[0], System.currentTimeMillis());
+        try(ServerSocket serverSocket = new ServerSocket(TCP_PORT);
+            MulticastSocket udpSocket = new MulticastSocket(UDP_PORT);
+            ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor()){
+                while(true){
+                    time = System.currentTimeMillis();
+                    try {
+                        Socket socket = serverSocket.accept();
+                        AuditorTCP tcp = new AuditorTCP(socket);
+                        AuditorUDP udp = new AuditorUDP(udpSocket);
+                        exec.execute(tcp);
+                        exec.execute(udp);
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
                     }
                 }
-
-                time = System.currentTimeMillis();
-
-                for(int i = 0; i < times.size(); ++i){
-                    for(String s : musicians.keySet()){
-                        if(times.get(s) - time > 5 * 1000){
-                            musicians.remove(s);
-                            times.remove(s);
-                        }
-                    }
-                }
-                socket.leaveGroup(group_address, netif);
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
-        }
     }
 }
