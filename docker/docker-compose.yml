@@ -5,11 +5,13 @@ services:
     build:
       context: ./image-auditor
       dockerfile: Dockerfile
+    container_name: dai-auditor
 
   musician:
     build:
-      context: ./image-auditor
+      context: ./image-musician
       dockerfile: Dockerfile
+    container_name: dai-musician
 
 #docker-compose up  --force-recreate -d
 #docker-compose down
